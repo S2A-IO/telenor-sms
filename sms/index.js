@@ -21,7 +21,8 @@ module.exports.handler = function SendSMSHandler( data, context, callback ) {
   let password = data.env.password;
   let to = data.current.to;
   let message = data.current.message;
-
+  message = encodeURI(message);
+  
   return sendSMS( msisdn, password, to, message )
   .then( function AfterSentSMS( result ) {
     callback( null, result );
@@ -57,7 +58,7 @@ function sendSMS ( msisdn, password, to, message) {
     });
   }).then(res=>{
     return new Promise((resolve, reject)=>{
-     request('https://telenorcsms.com.pk:27677/corporate_sms2/api/sendsms.jsp?session_id='+res+'&to='+to+'&text='+message+'&mask=NAVTTC', function (error, response, body) {
+     request('https://telenorcsms.com.pk:27677/corporate_sms2/api/sendsms.jsp?session_id='+res+'&to='+to+'&text='+message+'&mask=NAVTTC&unicode=true', function (error, response, body) {
        if (error) return reject(error);
        try {
          resolve(body);
